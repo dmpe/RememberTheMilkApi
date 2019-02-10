@@ -2,6 +2,7 @@
 using RememberTheMilkApi.Extensions;
 using RememberTheMilkApi.Objects;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -46,7 +47,12 @@ namespace RememberTheMilkApi.Helpers
         }
 
         public static RtmApiResponse CreateTimeline() => SendRequest(CreateTimelineMethod, new Dictionary<string, string>());
-
+        
+        /// <summary>
+        /// Return authotication URL
+        /// </summary>
+        /// <param name="permissions"></param>
+        /// <returns></returns>
         public static string GetAuthenticationUrl(Permissions permissions)
         {
             IDictionary<string, string> parameters = new Dictionary<string, string>();
@@ -76,9 +82,10 @@ namespace RememberTheMilkApi.Helpers
             parameters.Add("perms", perms);
             parameters.Add("frob", Frob);
             parameters.Add("api_key", ApiKey);
-            
+
             string apiSig = SignApiParameters(parameters).ToLower();
             parameters.CreateNewOrUpdateExisting("api_sig", apiSig);
+            //PrintDict("Our parameters", parameters);
 
             return $"{AuthUrl}?{EncodeParameters(parameters)}";
         }
@@ -89,6 +96,11 @@ namespace RememberTheMilkApi.Helpers
 
         internal static string EncodeParameters(IDictionary<string, string> parameters, bool signing = false) => string.Join(signing ? "" : "&", parameters.Select(kvp => $"{kvp.Key}{(signing ? kvp.Value : "=" + HttpUtility.UrlEncode(kvp.Value))}"));
 
+        /// <summary>
+        /// Copied from internet :)
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
         internal static string CalculateMd5Hash(string input)
         {
             // step 1, calculate MD5 hash from input
@@ -174,6 +186,16 @@ namespace RememberTheMilkApi.Helpers
             catch (Exception)
             {
                 return response;
+            }
+        }
+
+        public static void PrintDict(string v, IDictionary<string, string> dict)
+        {
+            Console.WriteLine(v, ":");
+
+            foreach (KeyValuePair<string, string> item in dict)
+            {
+                Console.WriteLine("Key = {0}, Value = {1}", item.Key, item.Value);
             }
         }
     }
