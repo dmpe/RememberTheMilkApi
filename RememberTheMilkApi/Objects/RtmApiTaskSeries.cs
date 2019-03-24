@@ -75,6 +75,8 @@ namespace RememberTheMilkApi.Objects
             Created = string.Empty;
             Modified = string.Empty;
             Source = string.Empty;
+            //Participants = string.Empty;
+            //Notes = string.Empty;
             Task = new List<RtmApiTaskObject>();
             Tags = new List<RtmApiTagObject>();
         }
